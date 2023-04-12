@@ -10,6 +10,7 @@ from wtforms.validators import DataRequired, Length
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SECRET_KEY'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+# dialect+driver://username:password@host:port/database
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -39,7 +40,7 @@ class NewsForm(FlaskForm):
 
 @app.route('/')
 def index():
-    news_list = News.query.all()
+    news_list = reversed(News.query.group_by(News.created_date).all())
     return render_template('index.html',
                            news=news_list)
 
